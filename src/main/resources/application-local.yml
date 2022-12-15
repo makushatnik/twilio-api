@@ -1,0 +1,78 @@
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    session:
+      timeout: 365d
+    encoding:
+      charset: UTF-8
+      force: true
+spring:
+  application.name: ${APPLICATION_NAME:twilio-backend}
+  datasource:
+    url: jdbc:postgresql://localhost:5432/twilio_dev
+    driver-class-name: org.postgresql.Driver
+    username: admin
+    password: '********'
+  jpa:
+    properties:
+      hibernate:
+        jdbc.batch_size: 100
+        order_inserts: true
+        order_updates: true
+        jdbc.batch_versioned_data: true
+        generate_statistics: ${GENERATE_STATISTICS:false}
+        format_sql: ${FORMAT_SQL:true}
+    show-sql: ${SHOW_SQL:true}
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+  session:
+    store-type: jdbc
+  jackson:
+    default-property-inclusion: non_null
+    deserialization:
+      fail-on-unknown-properties: false
+logging:
+  level:
+    org.springframework.web: ${SPRING_LOG_LEVEL:DEBUG}
+    com.example.myproj: ${APP_LOG_LEVEL:DEBUG}
+  pattern:
+    console: "%d %-5level %logger : %msg%n"
+    file: "%d %-5level [%thread] %logger : %msg%n"
+  file:
+    name: ${LOG_FILE_PATH:log/log.log}
+app:
+  version: v1
+  serverAddr: http://localhost:8080/
+  upload:
+    path: E:\files\img
+    temp: E:\files\tmp
+  twilio:
+    account-sid: '**********************************'
+    auth-token: '********************************'
+    phone-number: +1947******1
+  sms:
+    expireIn: 300
+    digits: 4
+  archive-posts:
+    enabled: ${ARCHIVE_POSTS_ENABLED:false}
+
+##
+# Public key
+##
+security:
+  oauth2:
+    resource:
+      jwt:
+        key-value: |
+          -----BEGIN PUBLIC KEY-----
+          <Some Public Key Here>
+          -----END PUBLIC KEY-----
+
+jobs:
+  archive-posts: ${ARCHIVE_POSTS_CRON:0 0 0 * * *}
+
+jwt:
+  secret: Some Secret Here
+  issuer: ${spring.application.name}
+  audience: '${spring.application.name}-api'
